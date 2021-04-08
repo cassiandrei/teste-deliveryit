@@ -1,0 +1,147 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+    <!-- Jumbotron Header -->
+    <header class="jumbotron my-4">
+        <h1 class="display-3">Bem vindo!</h1>
+        <p class="lead">Você está na plataforma que contém vários heróis, busque seu heroi favorito ou simule um
+            combate!</p>
+        <a target="_blank" href="{% url 'core:combate' %}" class="btn btn-primary btn-lg">Combate</a>
+    </header>
+
+
+    <link rel="stylesheet" href="{% static 'css/buscador.css' %}">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css"
+          integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
+
+    <br/>
+    <div class="row mb-5">
+        <div class="col-12 col-md-12 col-lg-12">
+            <form class="card card-sm" method="get">{% csrf_token %}
+                <div class="card-body row no-gutters align-items-center">
+                    <div class="col-auto">
+                        <i class="fas fa-search h4 text-body"></i>
+                    </div>
+                    <!--end of col-->
+                    <div class="col">
+                        <input name="q" class="form-control form-control-lg form-control-borderless" type="search"
+                               placeholder="Buscar herói">
+                    </div>
+                    <!--end of col-->
+                    <div class="col-auto">
+                        <button class="btn btn-lg btn-success" type="submit">Buscar</button>
+                    </div>
+                    <!--end of col-->
+                </div>
+            </form>
+        </div>
+        <!--end of col-->
+    </div>
+
+
+
+    <div class="row text-center">
+        {% for obj in herois %}
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="card h-100">
+                    <img class="card-img-top" src="{{ obj.get_foto_url }}" width="50px" alt="">
+                    <div class="card-body">
+                        <h4 class="card-title">{{ obj }}</h4>
+                        <p class="card-text">{{ obj.descricao }}</p>
+                    </div>
+                    <div class="card-footer">
+                        <button type="button" data-toggle="modal" data-target="#heroi{{ obj.pk }}"
+                                class="btn btn-primary">Ver mais
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Modal -->
+            <div class="modal fade" id="heroi{{ obj.pk }}" tabindex="-1" role="dialog"
+                 aria-labelledby="exampleModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">{{ obj.nome }}</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <img class="card-img-top" src="{{ obj.get_foto_url }}" width="50px" alt="">
+                            <p>{{ obj.descricao }}</p>
+                            <p>
+                                <b>Universo: </b> {{ obj.universo }}<br>
+                                <b>Altura: </b> {{ obj.altura }}m<br>
+                                <b>Peso: </b> {{ obj.peso }}kg<br>
+                                <b>Força: </b> {{ obj.forca }}<br>
+                                <b>Velocidade: </b> {{ obj.velocidade }}<br>
+                            </p>
+                            <button id="favorite{{ obj.pk }}" onclick="like('{{ obj.pk }}');"
+                                    class="btn {% if obj.favorito_set.exists %}btn-danger{% else %}btn-success{% endif %}">
+                                {% if obj.favorito_set.exists %}Remover Favorito{% else %}Favoritar{% endif %}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block page_scripts %}
+    <script>
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        const csrftoken = getCookie('csrftoken');
+
+
+        function like(id_heroi) {
+            var post_url = "{% url 'core:favoritar' %}"; //get form action url
+            var form_data = {
+                'id_heroi': id_heroi,
+                'csrfmiddlewaretoken': csrftoken,
+            };
+
+            var likeButton = document.getElementById('favorite' + id_heroi);
+
+            $.ajax({
+                    url: post_url,
+                    type: 'POST',
+                    data: form_data,
+                    success: function (response) {
+                        if (response.active) {
+                            likeButton.classList.add('btn-danger');
+                            likeButton.classList.remove('btn-success');
+                            likeButton.textContent = 'Remover favorito';
+                        } else {
+                            likeButton.classList.remove('btn-danger');
+                            likeButton.classList.add('btn-success');
+                            likeButton.textContent = 'Favoritar';
+                        }
+                    },
+                    error: function (err) {
+                        alert(err.responseText);
+                    }
+                }
+            );
+        }
+    </script>
+{% endblock %}
