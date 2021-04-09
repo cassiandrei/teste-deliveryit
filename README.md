@@ -47,7 +47,7 @@ docker-compose -f docker-compose-prod.yml up -d
 
 
 ``` 
-https://delivery.growtechnologies.com.br/
+https://deliveryit.growtechnologies.com.br/
 ```
 
 ---
