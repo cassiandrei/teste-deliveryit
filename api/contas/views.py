@@ -10,7 +10,7 @@ from rest_framework.permissions import AllowAny
 
 class PagamentoCreate(CreateAPIView):
     """
-        Cadastra um pagamento.
+        Cadastra um pagamento. Clique em Try Out para cadastrar por aqui.
     """
     serializer_class = PagamentoSerializer
     permission_classes = (AllowAny,)
