@@ -2,7 +2,7 @@
 
 Desáfio Técnico para vaga Python na Delivery IT.
 
-A aplicação em Django está na pasta "api".
+A aplicação em Python Django está na pasta "api".
 
 
 ## Tecnologias
