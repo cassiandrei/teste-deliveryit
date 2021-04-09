@@ -8,12 +8,13 @@ class Pagamento(models.Model):
     nome = models.CharField('Nome', max_length=100)
     valor_original = models.FloatField('Valor')
     valor_corrigido = models.FloatField('Valor', null=True, blank=True)
-    vencimento = models.DateField('Data de Vencimento')
-    pagamento = models.DateField('Data de Pagamento', auto_now_add=True)
+    vencimento = models.DateField('Data de Vencimento', help_text='Utilize o formato YYYY-MM-DD')
+    pagamento = models.DateField('Data de Pagamento', help_text='Utilize o formato YYYY-MM-DD')
 
     class Meta:
         verbose_name = 'Pagamento'
         verbose_name_plural = 'Contas'
+        ordering = ['pagamento']
 
     def get_valor_corrigido(self):
         if self.pagamento <= self.vencimento:
@@ -32,7 +33,7 @@ class Pagamento(models.Model):
             return self.valor_original + multa + juros
 
     def save(self, *args, **kwargs):
-        self.valor_original = self.get_valor_corrigido()
+        self.valor_corrigido = self.get_valor_corrigido()
         super(Pagamento, self).save(*args, **kwargs)
 
     def __str__(self):

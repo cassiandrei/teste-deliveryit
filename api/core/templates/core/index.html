@@ -6,7 +6,7 @@
     <header class="jumbotron my-4">
         <h1 class="display-3">Bem vindo!</h1>
         <p class="lead">Lista de contas, para cadastrar uma nova conta, utilize a API</p>
-        <a target="_blank" href="" class="btn btn-primary btn-lg">API</a>
+        <a target="_blank" href="{% url 'api_docs' %}" class="btn btn-primary btn-lg">API</a>
     </header>
 
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css"
@@ -14,8 +14,29 @@
 
     <br/>
 
-    <div class="row text-center">
-
+    <div class="row text-center mt-2">
+    <div class="col-lg-12 col-md-12 mb-12">
+        <h4>Lista de pagamentos</h4>
+        <table class="table">
+            <thead>
+            <th>Nome</th>
+            <th>Valor Original</th>
+            <th>Valor Corrigido</th>
+            <th>Vencimento</th>
+            <th>Pagamento</th>
+            </thead>
+            <tbody>
+            {% for p in pagamentos %}
+                <tr>
+                    <td>{{ p.nome }}</td>
+                    <td>R$ {{ p.valor_original }}</td>
+                    <td>R$ {{ p.valor_corrigido }}</td>
+                    <td>{{ p.vencimento }}</td>
+                    <td>{{ p.pagamento }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
     </div>
 {% endblock %}
 
