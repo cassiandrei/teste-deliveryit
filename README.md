@@ -1,6 +1,8 @@
 # desafio-tecnico-python-pleno
 
-Desáfio Técnico para vaga Python na Delivery IT
+Desáfio Técnico para vaga Python na Delivery IT.
+
+A aplicação em Django está na pasta "api".
 
 
 ## Tecnologias
